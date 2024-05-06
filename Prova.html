@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
+
+    .container {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        width: 400px; /* aumentando a largura do container */
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+        outline: none;
+        border-color: #007bff;
+    }
+
+    .btn {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+
+    .message {
+        color: red;
+        font-size: 14px;
+        margin-top: 10px;
+        display: none;
+    }
+
+    /* Aumentando o espaçamento entre as opções das questões */
+    .options label {
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    /* Adicionando margem inferior para o botão de submit */
+    #submit-btn {
+        margin-bottom: 20px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button class="btn" onclick="login()">Login</button>
+    <p class="message" id="message">Invalid username or password</p>
+</div>
+
+<script>
+
+var questions = [
+    {
+        question: "Qual é a primeira lei de Newton?",
+        options: ["Lei da Inércia", "Lei da Ação e Reação", "Lei da Gravitação Universal"],
+        correctAnswer: 0
+    },
+    // Adicione mais questões aqui
+   {
+        question: "Qual é a segunda lei de Newton?",
+        options: ["F = m * a", "F = m / a", "F = m + a"],
+        correctAnswer: 0
+    },
+    {
+        question: "Qual é a terceira lei de Newton?",
+        options: ["Ação e Reação", "Lei da Inércia", "Lei da Gravitação Universal"],
+        correctAnswer: 0
+    },
+    {
+        question: "Se um objeto está em repouso, qual é a força resultante sobre ele?",
+        options: ["0 N", "1 N", "Depende da massa do objeto"],
+        correctAnswer: 0
+    },
+    {
+        question: "Um objeto em movimento continuará se movendo a uma velocidade constante a menos que...",
+        options: ["A força resultante sobre ele seja zero", "Outra força atue sobre ele", "Esteja sujeito à gravidade"],
+        correctAnswer: 1
+    },
+    {
+        question: "Qual é a unidade de força no Sistema Internacional de Unidades (SI)?",
+        options: ["Joule", "Watt", "Newton"],
+        correctAnswer: 2
+    },
+    {
+        question: "A força necessária para acelerar uma massa de 1 kg a uma taxa de 1 m/s² é igual a...",
+        options: ["1 N", "2 N", "3 N"],
+        correctAnswer: 0
+    },
+    {
+        question: "Se uma força de 10 N é aplicada a um objeto com uma massa de 5 kg, qual será a aceleração do objeto?",
+        options: ["2 m/s²", "5 m/s²", "10 m/s²"],
+        correctAnswer: 2
+    },
+    {
+        question: "Qual das seguintes leis de Newton é conhecida como 'Princípio da Ação e Reação'?",
+        options: ["Primeira Lei", "Segunda Lei", "Terceira Lei"],
+        correctAnswer: 2
+    },
+    {
+        question: "Se uma força é aplicada a um objeto, mas não causa nenhum movimento, qual pode ser a razão mais provável?",
+        options: ["A força é muito pequena", "A força é maior que a força de atrito estático", "O objeto está em equilíbrio"],
+        correctAnswer: 2
+    },
+    
+    // Adicione mais questões conforme necessário
+];
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function selectRandomQuestions(questions, count) {
+    shuffledQuestions = shuffle(questions);
+    return shuffledQuestions.slice(0, count);
+}
+
+var selectedQuestions;
+var currentQuestionIndex = 0;
+var score = 0;
+var userAnswers = [];
+
+function login() {
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+
+    // Aqui você pode adicionar lógica para verificar o username e password
+    // Este é um exemplo simples apenas para ilustrar o formulário de login
+    if (username === "Bicudo" && password === "Bicudo2024") {
+        // Verifica se já foi feita uma tentativa anterior
+        if (localStorage.getItem("attempted")) {
+            alert("Você já fez a prova uma vez. Não é permitido fazer novamente.");
+            return;
+        }
+        // Se o login for bem-sucedido, remova o conteúdo atual da div container e adicione o formulário da prova
+        var container = document.querySelector('.container');
+        container.innerHTML = `
+            <h2>Prova de Física</h2>
+            <div id="timer">Tempo restante: <span id="time-left">60:00</span></div>
+            
+            <form id="quiz-form">
+                <label for="name">Seu nome:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <div id="questions"></div>
+                
+                <button type="button" id="next-btn" class="btn" style="display:none;" onclick="nextQuestion()">Próxima Questão</button>
+            </form>
+
+            <div id="result" style="display: none;">
+                <h3>Resultado</h3>
+                <p id="score"></p>
+                <button class="btn" onclick="sendResults()">Enviar Resultados por Email</button>
+            </div>
+        `;
+        startTimer();
+        selectedQuestions = selectRandomQuestions(questions, 10);
+        displayQuestions(selectedQuestions);
+    } else {
+        // Se o login falhar, exiba uma mensagem de erro
+        document.getElementById("message").style.display = "block";
+    }
+}
+
+function startTimer() {
+    var totalTime = 60 * 60; // 60 minutos
+    var timerElement = document.getElementById('time-left');
+    var timer = setInterval(function() {
+        var minutes = Math.floor(totalTime / 60);
+        var seconds = totalTime % 60;
+        timerElement.textContent = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+        totalTime--;
+        if (totalTime < 0) {
+            clearInterval(timer);
+            // Aqui você pode adicionar lógica para o que acontece quando o tempo acabar
+        }
+    }, 1000);
+}
+
+function displayQuestions(questions) {
+    var questionsDiv = document.getElementById('questions');
+    questions.forEach(function(question, index) {
+        var questionDiv = document.createElement('div');
+        questionDiv.id = 'question' + index;
+        questionDiv.style.display = index === 0 ? 'block' : 'none';
+        questionDiv.innerHTML = `
+            <div class="question">
+                <p>${question.question}</p>
+                <div class="options">
+                    ${question.options.map((option, optionIndex) => `<label><input type="radio" name="q${index}" value="${optionIndex}"> ${option}</label>`).join('<br>')}
+                </div>
+                <button type="button" class="btn" onclick="submitForm(${index})">Confirmar Resposta</button>
+            </div>
+        `;
+        questionsDiv.appendChild(questionDiv);
+    });
+}
+
+function submitForm(questionIndex) {
+    var answer = document.querySelector('input[name="q' + questionIndex + '"]:checked');
+    if (!answer) {
+        alert('Por favor, selecione uma resposta.');
+        return;
+    }
+
+    // Aqui você pode adicionar lógica para verificar a resposta
+    var correctAnswerIndex = selectedQuestions[questionIndex].correctAnswer;
+    userAnswers.push({
+        question: selectedQuestions[questionIndex].question,
+        selectedOption: answer.value,
+        correctOption: correctAnswerIndex
+    });
+
+    if (parseInt(answer.value) === correctAnswerIndex) {
+        score += 1;
+    }
+
+    // Ocultar o botão de confirmação de resposta e exibir o botão de próxima questão
+    document.getElementById('question' + questionIndex).querySelector('.btn').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'inline-block';
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < selectedQuestions.length) {
+        document.getElementById('question' + currentQuestionIndex).style.display = 'block';
+        document.getElementById('question' + (currentQuestionIndex - 1)).style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+    } else {
+        // Exibir a pontuação final e o botão de enviar resultados
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('score').textContent = 'Pontuação final: ' + score;
+
+        // Registra que o usuário já fez a tentativa
+        localStorage.setItem("attempted", true);
+
+        // Envia o histórico de respostas por email
+        sendResults();
+    }
+}
+
+function sendResults() {
+    var name = document.getElementById("name").value;
+    var results = "Nome: " + name + "\n"; // Inclui o nome do participante nos resultados
+    results += "Pontuação: " + score + "\n\n"; // Adiciona a pontuação
+
+    // Adiciona o histórico de respostas aos resultados
+    results += "Histórico de Respostas:\n";
+    userAnswers.forEach(function(answer, index) {
+        results += "Questão " + (index + 1) + ": " + answer.question + "\n";
+        results += "Resposta Selecionada: " + answer.options[answer.selectedOption] + "\n";
+        results += "Resposta Correta: " + answer.options[answer.correctOption] + "\n\n";
+    });
+
+    // Envie os resultados por e-mail
+    window.location.href = "mailto:renatovalenteprof43@outlook.com?subject=Resultados da Prova&body=" + encodeURIComponent(results);
+}
+
+// Adiciona um evento para detectar quando o usuário está prestes a sair da página
+window.addEventListener("beforeunload", function(event) {
+    // Limpa o armazenamento local ao sair da página
+    localStorage.clear();
+});
+
+// Bloqueia a função de pesquisa fora da página
+document.addEventListener("contextmenu", function(e){
+    e.preventDefault();
+});
+</script>
+
+</body>
+</html>
